@@ -1,0 +1,32 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "client": "npm run start-dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongodb": "^3.3.4",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4",
+    "concurrently": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hrant-p/react-mongo-chat.git"
+  },
+  "author": "Hrant Poghosyan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Hrant-p/react-mongo-chat/issues"
+  },
+  "homepage": "https://github.com/Hrant-p/react-mongo-chat#readme"
+}
