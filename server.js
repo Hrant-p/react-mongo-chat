@@ -47,18 +47,21 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
             // Check for name and message
             if(name === '' || message === ''){
                 // Send error status
-                sendStatus('Please enter a name and message');
+                sendStatus({
+                    message:'Please enter a name and message',
+                    status: null
+                });
             } else {
                 // Insert message
-                chat.insert({name: name, message: message}, function(){
+                chat.insertOne({name: name, message: message}, function(){
                     client.emit('output', [data]);
 
                     // Send status object
                     sendStatus({
                         message: 'Message sent',
-                        clear: true
+                        status: 'ok'
                     });
-                });
+                })
             }
         });
 
@@ -72,6 +75,3 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
         });
     });
 });
-////////////////////////////////////////////////////////
-
-

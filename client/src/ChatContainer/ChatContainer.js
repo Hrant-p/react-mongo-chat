@@ -7,49 +7,73 @@ class ChatContainer extends Component {
     constructor(props){
         super(props);
         this.state = {
-            id: '',
-            status: '',
-            allMessagesData: '',
+            id: null,
+            status: {},
+            allMessagesData: [],
             name: '',
             message: ''
+        };
+        this.onListenSockets(socket);
+    };
+
+
+    onListenSockets = socket => {
+        if (socket) {
+            console.log('Connected to socket...');
+
+            socket.on('output', data => {
+                if (data.length) {
+                    console.log(data);
+                    this.setState(state => {
+                        let messagesData = [...state.allMessagesData];
+                        messagesData = messagesData.concat(data);
+                        return ({ allMessagesData: messagesData})
+                    })
+                }
+            });
+
+            socket.on('status', currentStatus => {
+                if (this.state.status !== currentStatus && !this.state.id) {
+                    this.setState({
+                        status: currentStatus,
+                        id: setTimeout(this.handleStatusDefault,
+                            1500)
+                    })
+                }
+            });
+
+            socket.on('clear', clearingStatus => {
+                if (clearingStatus === 'cleared') {
+                    this.setState({
+                        status: { message: clearingStatus, status: clearingStatus },
+                        id: setTimeout(this.handleStatusDefault,3000)
+                    })
+                }
+            })
         }
-    }
+    };
+
 
     keyPressed = e => {
         if (e.key === 'Enter') {
+
             socket.emit('input', {
                 name: this.state.name,
                 message: this.state.message
             });
-            e.preventDefault()
+            e.preventDefault();
+
+            this.setState({ message: '' })
         }
     };
 
-    handleStatus = data => {
-            if (this.state.status !== data && !this.state.id) {
-                    this.setState({
-                        id: setTimeout(() => this.setState({
-                            status: data
-                        }), 2500)
-                    })
-            }
+    handleClick = () => {
+        socket.emit('clear')
     };
 
-    componentDidMount() {
-        if (socket) {
-            console.log('Connected to socket...');
-            socket.on('output', data => {
-              if (data.length) {
-                  this.setState({
-                      allMessagesData: data
-                  })
-              }
-            });
-            socket.on('status', status => {
-                this.handleStatus(status)
-            })
-        }
-    }
+    handleStatusDefault = () => {
+        this.setState({status: {}, id: clearTimeout(this.state.id)})
+    };
 
     handleChange = ({target: {name, value}}) => {
         this.setState({
@@ -57,10 +81,8 @@ class ChatContainer extends Component {
         })
     };
 
-
-
     render() {
-        const {allMessagesData} = this.state;
+        const {allMessagesData, status, name, message} = this.state;
 
         return (
             <div className="container">
@@ -68,10 +90,16 @@ class ChatContainer extends Component {
                     <div className="col-md-6 offset-md-3 col-sm-12">
                         <h1 className="text-center">
                             MongoChat
-                            <button id="clear" className="btn btn-danger">Clear</button>
+                            <button
+                                id="clear"
+                                className="btn btn-danger"
+                                onClick={this.handleClick}
+                            >
+                                Clear
+                            </button>
                         </h1>
                         <div id="status">
-
+                            {status.message}
                         </div>
                         <div id="chat">
                             <input
@@ -80,13 +108,21 @@ class ChatContainer extends Component {
                                 name="name"
                                 className="form-control"
                                 placeholder="Enter name..."
-                                value={this.state.name}
+                                value={name}
                                 onChange={this.handleChange}
                             />
                                 <br/>
                                     <div className="card">
                                         <div id="messages" className="card-block" style={{height: '400px'}}>
-                                            {JSON.stringify(allMessagesData)}
+                                            {allMessagesData.map(item => (
+                                                <div
+                                                    key={item._id}>
+                                                    <b>
+                                                        {` ${item.name}: `}
+                                                    </b>
+                                                    {item.message}
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                     <br/>
@@ -97,7 +133,7 @@ class ChatContainer extends Component {
                                             placeholder="Enter message..."
                                             onChange={this.handleChange}
                                             onKeyPress={this.keyPressed}
-                                            value={this.state.message}
+                                            value={message}
                                         />
                         </div>
                     </div>
