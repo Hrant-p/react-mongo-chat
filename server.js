@@ -45,22 +45,27 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
             let message = data.message;
 
             // Check for name and message
-            if(name === '' || message === ''){
+            if(name === '' || message === '') {
                 // Send error status
-                sendStatus({
-                    message:'Please enter a name and message',
-                    status: null
-                });
+                sendStatus('Please enter a name and message');
             } else {
                 // Insert message
-                chat.insertOne({name: name, message: message}, function(){
-                    client.emit('output', [data]);
+                chat.insertOne({
+                        name: name,
+                        message: message
+                    },
+                    function(){
+                        chat.find().limit(100).sort({_id:1}).toArray(function(err, res){
+                            if(err){
+                                throw err;
+                            }
 
-                    // Send status object
-                    sendStatus({
-                        message: 'Message sent',
-                        status: 'ok'
-                    });
+                            // Emit the messages
+                            client.emit('output', res);
+                        });
+                    // client.emit('output', [data]);
+                    // Send status
+                    sendStatus('Message sent');
                 })
             }
         });
@@ -70,7 +75,13 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
             // Remove all chats from collection
             chat.remove({}, function(){
                 // Emit cleared
-                socket.emit('cleared');
+                socket.emit('cleared', true);
+            });
+            chat.find().toArray((err, res) => {
+                if (err) {
+                    throw err
+                }
+                client.emit('output', [])
             });
         });
     });
