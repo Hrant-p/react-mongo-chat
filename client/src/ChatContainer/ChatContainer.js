@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import io from 'socket.io-client';
 
 const socket = io.connect('http://127.0.0.1:4000');
@@ -55,7 +55,6 @@ class ChatContainer extends Component {
                 message: this.state.message
             });
             e.preventDefault();
-
             this.setState({ message: '' })
         }
     };
@@ -78,7 +77,7 @@ class ChatContainer extends Component {
     };
 
     render() {
-        const {allMessagesData, status, name, message} = this.state;
+        const { allMessagesData, status, name, message } = this.state;
 
         return (
             <div className="container">

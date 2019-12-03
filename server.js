@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 const express = require('express');
 const path = require('path');
@@ -77,7 +77,7 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
                 // Emit cleared
                 socket.emit('cleared', true);
             });
-            chat.find().toArray((err, res) => {
+            chat.find().toArray(function(err, res) {
                 if (err) {
                     throw err
                 }
