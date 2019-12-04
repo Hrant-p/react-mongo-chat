@@ -16,9 +16,8 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "concurrently": "^5.0.0",
-    "eslint": "^6.7.2",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "concurrently": "^5.0.0"
   },
   "repository": {
     "type": "git",

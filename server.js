@@ -5,11 +5,11 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const mongo = require('mongodb').MongoClient;
 const client = require('socket.io').listen(4000).sockets;
-//
 const app = new express();
+
 app.use(bodyParser.urlencoded({extended:true}));
 
-// -----------------Connect to mongo-------------------------------------------------------------------
+// Connect to mongo
 mongo.connect('mongodb://127.0.0.1/mongochat',
     { useUnifiedTopology: true },
     function(err, database){
@@ -30,7 +30,11 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
         };
 
         // Get chats from mongo collection
-        chat.find().limit(100).sort({_id:1}).toArray(function(err, res){
+        chat
+            .find()
+            .limit(100)
+            .sort({_id:1})
+            .toArray(function(err, res){
             if(err){
                 throw err;
             }
@@ -45,7 +49,7 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
             let message = data.message;
 
             // Check for name and message
-            if(name === '' || message === '') {
+            if (name === '' || message === '') {
                 // Send error status
                 sendStatus('Please enter a name and message');
             } else {
@@ -55,7 +59,11 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
                         message: message
                     },
                     function(){
-                        chat.find().limit(100).sort({_id:1}).toArray(function(err, res){
+                        chat
+                            .find()
+                            .limit(100)
+                            .sort({_id:1})
+                            .toArray(function(err, res){
                             if(err){
                                 throw err;
                             }
@@ -63,7 +71,6 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
                             // Emit the messages
                             client.emit('output', res);
                         });
-                    // client.emit('output', [data]);
                     // Send status
                     sendStatus('Message sent');
                 })
@@ -73,16 +80,11 @@ mongo.connect('mongodb://127.0.0.1/mongochat',
         // Handle clear
         socket.on('clear', function(data){
             // Remove all chats from collection
-            chat.remove({}, function(){
+            chat.deleteMany({}, function () {
                 // Emit cleared
                 socket.emit('cleared', true);
             });
-            chat.find().toArray(function(err, res) {
-                if (err) {
-                    throw err
-                }
                 client.emit('output', [])
-            });
         });
     });
 });

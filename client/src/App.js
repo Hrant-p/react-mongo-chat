@@ -1,15 +1,13 @@
-import React, { Component, Fragment } from 'react';
+import React, {Fragment} from 'react';
 import './App.scss';
-import ChatContainer from './ChatContainer/ChatContainer';
+import ChatContainer from "./ChatContainer/ChatContainer";
 
-class App extends Component {
-  render() {
+function App() {
     return (
-      <Fragment>
-        <ChatContainer />
-      </Fragment>
+        <Fragment>
+            <ChatContainer />
+        </Fragment>
     );
-  }
 }
 
 export default App;

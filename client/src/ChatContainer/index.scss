@@ -1,3 +1,34 @@
-#messages{
-  height: 300px;
+#messages {
+  min-height: 400px;
+  font-family: "Bookman Old Style";
+  b {
+    margin-left: 15px;
+    span {
+      font-family: Dialog !important;
+    }
+  }
+}
+
+.btn-danger {
+  margin-left: 10px !important;
+}
+
+.text-center {
+  margin-bottom: 20px;
+}
+
+#status {
+  position: absolute;
+  top: 45px;
+  color: red;
+  font-size: 12px;
+  font-family: "Consolas", fantasy;
+  text-shadow: 1px 1px 1px black;
+  transition: 0.3s ease-in-out;
+  &:hover {
+    font-size: 15px;
+    color: blue;
+    transition: 0.3s ease-in-out;
+    text-shadow: 1px 1px 1px darkmagenta;
+  }
 }

@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import io from 'socket.io-client';
+import './index.scss'
 
 const socket = io.connect('http://127.0.0.1:4000');
 
@@ -31,7 +32,7 @@ class ChatContainer extends Component {
                 if (this.state.status !== currentStatus && !this.state.id) {
                     this.setState({
                         status: currentStatus,
-                        id: setTimeout(this.handleStatusDefault,1500)
+                        id: setTimeout(this.handleStatusDefault,2000)
                     })
                 }
             });
@@ -55,6 +56,7 @@ class ChatContainer extends Component {
                 message: this.state.message
             });
             e.preventDefault();
+
             this.setState({ message: '' })
         }
     };
@@ -106,16 +108,14 @@ class ChatContainer extends Component {
                                 value={name}
                                 onChange={this.handleChange}
                             />
-                                <br/>
+                                <br />
                                     <div className="card">
-                                        <div id="messages" className="card-block" style={{height: '400px'}}>
+                                        <div id="messages" className="card-block">
                                             {allMessagesData.map(item => (
                                                 <div
                                                     key={item._id}>
-                                                    <b style={{marginLeft: '15px'}}>
-                                                        {`${item.name}: `}
-                                                    </b>
-                                                    {item.message}
+                                                    <b>{`${item.name}: `}</b>
+                                                    <span>{item.message}</span>
                                                 </div>
                                             ))}
                                         </div>
